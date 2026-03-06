@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Handle login
-  Future<void> _handleLogin(BuildContext context) async {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       final authController =
           Provider.of<AuthController>(context, listen: false);
@@ -68,29 +68,29 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
 
-      if (mounted) {
-        Navigator.pop(context); // Close loading dialog
+      if (!mounted) return;
 
-        if (success) {
-          // Navigate to Dashboard
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const DashboardScreen(),
+      Navigator.pop(context); // Close loading dialog
+
+      if (success) {
+        // Navigate to Dashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DashboardScreen(),
+          ),
+        );
+      } else {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              authController.errorMessage ?? 'Login failed',
             ),
-          );
-        } else {
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                authController.errorMessage ?? 'Login failed',
-              ),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () => _handleLogin(context),
+                    onPressed: () => _handleLogin(),
                     child: const Text(
                       'Login',
                       style: TextStyle(

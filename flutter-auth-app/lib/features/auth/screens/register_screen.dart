@@ -73,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   // Handle register
-  Future<void> _handleRegister(BuildContext context) async {
+  Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate()) {
       final authController =
           Provider.of<AuthController>(context, listen: false);
@@ -93,41 +93,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: _passwordController.text,
       );
 
-      if (mounted) {
-        Navigator.pop(context); // Close loading dialog
+      if (!mounted) return;
 
-        if (success) {
-          // Show success message and navigate to login
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registration successful! Please login.'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
-          );
+      Navigator.pop(context); // Close loading dialog
 
-          Future.delayed(const Duration(seconds: 2), () {
-            if (mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
-            }
-          });
-        } else {
-          // Show error message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                authController.errorMessage ?? 'Registration failed',
+      if (success) {
+        // Show success message and navigate to login
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Registration successful! Please login.'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginScreen(),
               ),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
+            );
+          }
+        });
+      } else {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              authController.errorMessage ?? 'Registration failed',
             ),
-          );
-        }
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
@@ -232,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: () => _handleRegister(context),
+                    onPressed: () => _handleRegister(),
                     child: const Text(
                       'Register',
                       style: TextStyle(
