@@ -6,6 +6,8 @@ import 'features/auth/screens/login_screen.dart';
 import 'features/dashboard/screens/dashboard_screen.dart';
 import 'features/auth/controller/github_controller.dart';
 import 'features/auth/controller/weather_controller.dart';
+import 'theme/theme.dart';
+import 'theme/theme_controller.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -22,24 +24,26 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthController()),
         ChangeNotifierProvider(create: (_) => GithubController()),
         ChangeNotifierProvider(create: (_) => WeatherController()),
+        ChangeNotifierProvider(create: (_) => ThemeController()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Auth App',
-        theme: ThemeData(
-          primaryColor: Colors.blue,
-          useMaterial3: true,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          fontFamily: 'Roboto',
-        ),
-        debugShowCheckedModeBanner: false,
-        home: Consumer<AuthController>(
-          builder: (context, authController, _) {
-            // If user is authenticated, show dashboard, otherwise show login
-            return authController.isAuthenticated
-                ? const DashboardScreen()
-                : const LoginScreen();
-          },
-        ),
+      child: Consumer<ThemeController>(
+        builder: (context, themeController, _) {
+          return MaterialApp(
+            title: 'Flutter Auth App',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            debugShowCheckedModeBanner: false,
+            home: Consumer<AuthController>(
+              builder: (context, authController, _) {
+                // If user is authenticated, show dashboard, otherwise show login
+                return authController.isAuthenticated
+                    ? const DashboardScreen()
+                    : const LoginScreen();
+              },
+            ),
+          );
+        },
       ),
     );
   }
