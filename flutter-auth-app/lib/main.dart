@@ -8,6 +8,7 @@ import 'features/auth/controller/github_controller.dart';
 import 'features/auth/controller/weather_controller.dart';
 import 'theme/theme.dart';
 import 'theme/theme_controller.dart';
+import 'features/auth/controller/image_controller.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GithubController()),
         ChangeNotifierProvider(create: (_) => WeatherController()),
         ChangeNotifierProvider(create: (_) => ThemeController()),
+        ChangeNotifierProvider(create: (_) => ImageController()),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeController, _) {

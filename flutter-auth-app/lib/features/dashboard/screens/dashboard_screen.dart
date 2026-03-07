@@ -5,6 +5,10 @@ import '../../auth/screens/login_screen.dart';
 import 'github_navigation.dart';
 import 'weather_navigation.dart';
 import 'settings_navigation.dart';
+import 'image_feed_screen.dart';
+import '../../../features/auth/controller/github_controller.dart';
+import '../../../features/auth/controller/weather_controller.dart';
+import '../../../features/auth/controller/image_controller.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -15,6 +19,29 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() => _loadInitialData());
+  }
+
+  Future<void> _loadInitialData() async {
+    final github = context.read<GithubController>();
+    final weather = context.read<WeatherController>();
+    final images = context.read<ImageController>();
+
+    /// 1️⃣ First load GitHub
+    await github.getUser("AjayKumarSingh12113");
+
+    /// 2️⃣ Wait 1 second
+    await Future.delayed(const Duration(seconds: 1));
+
+    /// 3️⃣ Load remaining APIs
+    weather.getWeather();
+    images.loadImages();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +65,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.only(right: 16),
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
@@ -91,6 +119,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             label: 'Weather',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.image_rounded),
+            activeIcon: Icon(Icons.image_rounded),
+            label: 'Images',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.settings_rounded),
             activeIcon: Icon(Icons.settings_rounded),
             label: 'Settings',
@@ -106,7 +139,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return const GithubNavigation();
       case 1:
         return const WeatherNavigation();
+
       case 2:
+        return const ImageFeedScreen();
+      case 3:
         return const SettingsNavigation();
       default:
         return const GithubNavigation();
@@ -147,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 );
               },
-              child: Text(
+              child: const Text(
                 'Logout',
                 style: TextStyle(
                   color: Colors.red,

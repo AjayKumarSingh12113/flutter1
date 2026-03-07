@@ -14,13 +14,23 @@ class WeatherController extends ChangeNotifier {
 
   Future<void> getWeather() async {
 
+    debugPrint('🔵 [WeatherController] getWeather() called');
+
+    if (_weather != null) {
+      debugPrint('🟡 [WeatherController] Weather data already loaded, skipping API call');
+      return;
+    }
+
     _isLoading = true;
     notifyListeners();
 
+    debugPrint('🟢 [WeatherController] Starting Weather API call');
+
     try {
       _weather = await _service.fetchWeather();
+      debugPrint('✅ [WeatherController] Weather API call successful - Location: ${_weather?.city}');
     } catch (e) {
-      print(e);
+      debugPrint('❌ [WeatherController] Weather API call failed: $e');
     }
 
     _isLoading = false;

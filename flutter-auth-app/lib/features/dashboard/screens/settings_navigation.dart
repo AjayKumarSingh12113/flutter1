@@ -34,7 +34,7 @@ class SettingsNavigation extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
@@ -42,8 +42,8 @@ class SettingsNavigation extends StatelessWidget {
                   color: Colors.white,
                   size: 40,
                 ),
-                const SizedBox(height: 12),
-                const Text(
+                SizedBox(height: 12),
+                Text(
                   'Settings',
                   style: TextStyle(
                     fontSize: 28,
@@ -51,8 +51,8 @@ class SettingsNavigation extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: 8),
+                Text(
                   'Manage your account',
                   style: TextStyle(
                     fontSize: 16,

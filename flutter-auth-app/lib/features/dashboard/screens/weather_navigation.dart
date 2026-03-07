@@ -14,8 +14,10 @@ class _WeatherNavigationState extends State<WeatherNavigation> {
   @override
   void initState() {
     super.initState();
+    debugPrint('🔶 [WeatherNavigation] initState() called');
     Future.microtask(() {
       if (mounted) {
+        debugPrint('🔶 [WeatherNavigation] Calling getWeather() from initState');
         context.read<WeatherController>().getWeather();
       }
     });
@@ -51,7 +53,7 @@ class _WeatherNavigationState extends State<WeatherNavigation> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.cloud_rounded,
                   color: Colors.white,
                   size: 40,

@@ -14,8 +14,10 @@ class _GithubNavigationState extends State<GithubNavigation> {
   @override
   void initState() {
     super.initState();
+    debugPrint('🔶 [GithubNavigation] initState() called');
     Future.microtask(() {
       if (mounted) {
+        debugPrint('🔶 [GithubNavigation] Calling getUser() from initState');
         context.read<GithubController>().getUser("AjayKumarSingh12113");
       }
     });
@@ -51,7 +53,7 @@ class _GithubNavigationState extends State<GithubNavigation> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.code_rounded,
                   color: Colors.white,
                   size: 40,
