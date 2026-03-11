@@ -16,8 +16,10 @@ class GithubService {
 
       return GithubUser.fromJson(data);
 
+    } else if (response.statusCode == 404) {
+      throw Exception("GitHub user '@$username' not found. Please check the username.");
     } else {
-      throw Exception("Failed to load profile");
+      throw Exception("Failed to load GitHub profile. Please try again.");
     }
   }
 }

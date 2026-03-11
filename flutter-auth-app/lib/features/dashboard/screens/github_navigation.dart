@@ -11,16 +11,25 @@ class GithubNavigation extends StatefulWidget {
 }
 
 class _GithubNavigationState extends State<GithubNavigation> {
+  late TextEditingController _usernameController;
+
   @override
   void initState() {
     super.initState();
+    _usernameController = TextEditingController();
     debugPrint('🔶 [GithubNavigation] initState() called');
     Future.microtask(() {
       if (mounted) {
-        debugPrint('🔶 [GithubNavigation] Calling getUser() from initState');
+        debugPrint('🔶 [GithubNavigation] Calling getUser() with default username: AjayKumarSingh12113');
         context.read<GithubController>().getUser("AjayKumarSingh12113");
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -30,7 +39,8 @@ class _GithubNavigationState extends State<GithubNavigation> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read<GithubController>().getUser("AjayKumarSingh12113");
+        final currentUsername = githubController.user?.name ?? "AjayKumarSingh12113";
+        await context.read<GithubController>().getUser(currentUsername);
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -80,6 +90,69 @@ class _GithubNavigationState extends State<GithubNavigation> {
             ),
           ),
 
+          // Username Search Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter GitHub username',
+                      prefixIcon: const Icon(Icons.code_rounded),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                    onSubmitted: (value) {
+                      _searchUser();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _searchUser,
+                      borderRadius: BorderRadius.circular(12),
+                      child: const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.search_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // GitHub Profile Card
           Transform.translate(
             offset: const Offset(0, 20),
@@ -87,9 +160,11 @@ class _GithubNavigationState extends State<GithubNavigation> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: githubController.isLoading
                   ? _buildLoadingCard()
-                  : githubController.user != null
-                      ? _buildProfileCard(githubController)
-                      : _buildErrorCard(),
+                  : githubController.errorMessage != null
+                      ? _buildErrorCard(githubController.errorMessage!)
+                      : githubController.user != null
+                          ? _buildProfileCard(githubController)
+                          : const SizedBox.shrink(),
             ),
           ),
           const SizedBox(height: 30),
@@ -213,44 +288,86 @@ class _GithubNavigationState extends State<GithubNavigation> {
     );
   }
 
-  Widget _buildErrorCard() {
+  Widget _buildErrorCard(String errorMessage) {
     return Builder(
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.all(48),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: Colors.red.withOpacity(0.1),
+            border: Border.all(
+              color: Colors.red.withOpacity(0.3),
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Column(
             children: [
               Icon(
                 Icons.error_outline_rounded,
-                size: 56,
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                size: 48,
+                color: Colors.red.shade400,
               ),
               const SizedBox(height: 16),
               Text(
-                'Unable to load GitHub profile',
+                'Error',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red.shade400,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                errorMessage,
+                style: TextStyle(
+                  fontSize: 14,
                   color: Theme.of(context).textTheme.bodyMedium?.color,
-                  fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _usernameController.clear();
+                    context.read<GithubController>().getUser('AjayKumarSingh12113');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: const Text(
+                    'Load Default User',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  void _searchUser() {
+    final username = _usernameController.text.trim();
+    if (username.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please enter a GitHub username'),
+          backgroundColor: Colors.orange.shade400,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    debugPrint('🔵 [GithubNavigation] Searching for user: @$username');
+    context.read<GithubController>().getUser(username);
   }
 
   Widget _buildStatColumn(String label, String value, IconData icon) {

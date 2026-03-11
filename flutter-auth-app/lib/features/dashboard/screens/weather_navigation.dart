@@ -11,16 +11,25 @@ class WeatherNavigation extends StatefulWidget {
 }
 
 class _WeatherNavigationState extends State<WeatherNavigation> {
+  late TextEditingController _cityController;
+
   @override
   void initState() {
     super.initState();
+    _cityController = TextEditingController();
     debugPrint('🔶 [WeatherNavigation] initState() called');
     Future.microtask(() {
       if (mounted) {
-        debugPrint('🔶 [WeatherNavigation] Calling getWeather() from initState');
-        context.read<WeatherController>().getWeather();
+        debugPrint('🔶 [WeatherNavigation] Calling getWeather() with default city: Delhi');
+        context.read<WeatherController>().getWeather('Delhi');
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _cityController.dispose();
+    super.dispose();
   }
 
   @override
@@ -30,7 +39,8 @@ class _WeatherNavigationState extends State<WeatherNavigation> {
 
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read<WeatherController>().getWeather();
+        final currentCity = weatherController.weather?.city ?? 'Delhi';
+        await context.read<WeatherController>().getWeather(currentCity);
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -80,14 +90,79 @@ class _WeatherNavigationState extends State<WeatherNavigation> {
             ),
           ),
 
+          // City Search Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _cityController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter city name',
+                      prefixIcon: const Icon(Icons.location_on_rounded),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                    onSubmitted: (value) {
+                      _searchCity();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _searchCity,
+                      borderRadius: BorderRadius.circular(12),
+                      child: const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.search_rounded,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Weather Card
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 28, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: weatherController.isLoading
                 ? _buildLoadingCard()
-                : weatherController.weather != null
-                    ? _buildWeatherCard(weatherController)
-                    : _buildErrorCard(),
+                : weatherController.errorMessage != null
+                    ? _buildErrorCard(weatherController.errorMessage!)
+                    : weatherController.weather != null
+                        ? _buildWeatherCard(weatherController)
+                        : const SizedBox.shrink(),
           ),
           const SizedBox(height: 30),
         ],
@@ -263,43 +338,85 @@ class _WeatherNavigationState extends State<WeatherNavigation> {
     );
   }
 
-  Widget _buildErrorCard() {
+  Widget _buildErrorCard(String errorMessage) {
     return Builder(
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.all(48),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: Colors.red.withOpacity(0.1),
+            border: Border.all(
+              color: Colors.red.withOpacity(0.3),
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Column(
             children: [
               Icon(
-                Icons.cloud_off_rounded,
-                size: 56,
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                Icons.error_outline_rounded,
+                size: 48,
+                color: Colors.red.shade400,
               ),
               const SizedBox(height: 16),
               Text(
-                'Weather not available',
+                'Error',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red.shade400,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                errorMessage,
+                style: TextStyle(
+                  fontSize: 14,
                   color: Theme.of(context).textTheme.bodyMedium?.color,
-                  fontWeight: FontWeight.w500,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _cityController.clear();
+                    context.read<WeatherController>().getWeather('Delhi');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: const Text(
+                    'Load Default (Delhi)',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  void _searchCity() {
+    final city = _cityController.text.trim();
+    if (city.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please enter a city name'),
+          backgroundColor: Colors.orange.shade400,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    debugPrint('🔵 [WeatherNavigation] Searching for city: $city');
+    context.read<WeatherController>().getWeather(city);
   }
 }

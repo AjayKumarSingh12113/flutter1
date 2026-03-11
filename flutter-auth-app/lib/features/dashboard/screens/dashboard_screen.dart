@@ -39,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await Future.delayed(const Duration(seconds: 1));
 
     /// 3️⃣ Load remaining APIs
-    weather.getWeather();
+    weather.getWeather('Delhi');
     images.loadImages();
   }
 

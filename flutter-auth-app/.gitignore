@@ -59,6 +59,19 @@ app.*.map.json
 /android/*.iml
 /android/key.properties
 
+# Firebase configuration files (sensitive: API keys, credentials)
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+google-services.json
+GoogleService-Info.plist
+
+# API Keys and Secrets
+*.key
+*.pem
+*.p12
+*.p8
+/secrets/
+
 # iOS/XCode related
 /ios/**/*.mode1v3
 /ios/**/*.mode2v3
