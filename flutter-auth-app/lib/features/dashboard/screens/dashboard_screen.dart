@@ -9,6 +9,7 @@ import 'image_feed_screen.dart';
 import '../../../features/auth/controller/github_controller.dart';
 import '../../../features/auth/controller/weather_controller.dart';
 import '../../../features/auth/controller/image_controller.dart';
+import '../../../l10n/app_localizations_extension.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -46,12 +47,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final authController = Provider.of<AuthController>(context);
+    final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Dashboard',
-          style: TextStyle(
+        title: Text(
+          l10n.dashboard,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 24,
@@ -95,40 +97,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
       body: _buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        backgroundColor: Theme.of(context).cardColor,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Theme.of(context).disabledColor.withOpacity(0.5),
-        type: BottomNavigationBarType.fixed,
-        elevation: 8,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+      bottomNavigationBar: Consumer(
+        builder: (context, _, __) {
+          final l10n = context.l10n;
+          return BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            backgroundColor: Theme.of(context).cardColor,
+            selectedItemColor: Theme.of(context).primaryColor,
+            unselectedItemColor: Theme.of(context).disabledColor.withOpacity(0.5),
+            type: BottomNavigationBarType.fixed,
+            elevation: 8,
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.code_rounded),
+                activeIcon: const Icon(Icons.code_rounded),
+                label: l10n.gitHubProfile,
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.cloud_rounded),
+                activeIcon: const Icon(Icons.cloud_rounded),
+                label: l10n.weather,
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.image_rounded),
+                activeIcon: const Icon(Icons.image_rounded),
+                label: l10n.imageFeed,
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.settings_rounded),
+                activeIcon: const Icon(Icons.settings_rounded),
+                label: l10n.settings,
+              ),
+            ],
+          );
         },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.code_rounded),
-            activeIcon: Icon(Icons.code_rounded),
-            label: 'GitHub',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cloud_rounded),
-            activeIcon: Icon(Icons.cloud_rounded),
-            label: 'Weather',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.image_rounded),
-            activeIcon: Icon(Icons.image_rounded),
-            label: 'Images',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_rounded),
-            activeIcon: Icon(Icons.settings_rounded),
-            label: 'Settings',
-          ),
-        ],
       ),
     );
   }

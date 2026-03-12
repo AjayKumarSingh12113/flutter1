@@ -6,7 +6,6 @@ class GithubController extends ChangeNotifier {
 
   GithubUser? user;
   bool isLoading = false;
-  String? _lastUsername;
   String? _errorMessage;
 
   final GithubService _service = GithubService();
@@ -25,7 +24,6 @@ class GithubController extends ChangeNotifier {
 
     try {
       user = await _service.fetchUser(username);
-      _lastUsername = username;
       _errorMessage = null;
       debugPrint('✅ [GithubController] GitHub API call successful - User: ${user?.name}');
     } catch (e) {

@@ -4,6 +4,7 @@ import '../controller/auth_controller.dart';
 import '../widgets/auth_textfield.dart';
 import 'register_screen.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
+import '../../../l10n/app_localizations_extension.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -28,11 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
   // Email validation
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your email';
+      return context.l10n.enterEmail;
     }
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     if (!emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email';
+      return context.l10n.validEmail;
     }
     return null;
   }
@@ -40,10 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
   // Password validation
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your password';
+      return context.l10n.enterPassword;
     }
     if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+      return context.l10n.passwordMinLength;
     }
     return null;
   }
@@ -141,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final l10n = context.l10n;
 
     return SafeArea(
       child: Scaffold(
@@ -155,18 +157,18 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: screenHeight * 0.03),
-                const Text(
-                  'Welcome Back',
-                  style: TextStyle(
+                Text(
+                  l10n.signIn,
+                  style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Login to your account',
-                  style: TextStyle(
+                Text(
+                  l10n.enterEmail,
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
                     fontWeight: FontWeight.w400,
@@ -178,16 +180,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       AuthTextField(
-                        label: 'Email',
-                        hintText: 'Enter your email',
+                        label: l10n.email,
+                        hintText: l10n.email,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         validator: _validateEmail,
                       ),
                       SizedBox(height: screenHeight * 0.025),
                       AuthTextField(
-                        label: 'Password',
-                        hintText: 'Enter your password',
+                        label: l10n.password,
+                        hintText: l10n.password,
                         isPassword: true,
                         controller: _passwordController,
                         validator: _validatePassword,
@@ -207,9 +209,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () => _handleLogin(),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.signIn,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -262,18 +264,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () => _handleGoogleLogin(),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.login,
                           color: Colors.red,
                           size: 20,
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Text(
-                          'Login with Google',
-                          style: TextStyle(
+                          l10n.signInWithGoogle,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87,
@@ -287,9 +289,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Don't have an account? ",
-                      style: TextStyle(
+                    Text(
+                      "${l10n.dontHaveAccount} ",
+                      style: const TextStyle(
                         color: Colors.black87,
                         fontSize: 14,
                       ),
@@ -315,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         child: Text(
-                          'Register',
+                          l10n.signUp,
                           style: TextStyle(
                             color: isHover ? Colors.red : Colors.blue,
                             fontSize: 14,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../auth/controller/github_controller.dart';
 import '../../auth/controller/auth_controller.dart';
+import '../../../l10n/app_localizations_extension.dart';
 
 class GithubNavigation extends StatefulWidget {
   const GithubNavigation({Key? key}) : super(key: key);
@@ -99,7 +100,7 @@ class _GithubNavigationState extends State<GithubNavigation> {
                   child: TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
-                      hintText: 'Enter GitHub username',
+                      hintText: context.l10n.enterGithubUsername,
                       prefixIcon: const Icon(Icons.code_rounded),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),

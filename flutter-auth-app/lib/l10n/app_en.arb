@@ -1,0 +1,137 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Flutter Auth App",
+  "appDescription": "A Flutter authentication app with comprehensive features",
+
+  "login": "Login",
+  "logout": "Logout",
+
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+
+  "register": "Register",
+  "forgotPassword": "Forgot Password?",
+
+  "dontHaveAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+
+  "signUp": "Sign Up",
+  "signIn": "Sign In",
+
+  "signUpWithGoogle": "Sign Up with Google",
+  "signInWithGoogle": "Sign In with Google",
+
+  "enterEmail": "Please enter your email",
+  "validEmail": "Please enter a valid email",
+  "enterPassword": "Please enter your password",
+
+  "passwordMinLength": "Password must be at least 6 characters",
+  "passwordMismatch": "Passwords do not match",
+
+  "dashboard": "Dashboard",
+  "imageFeed": "Image Feed",
+  "weather": "Weather",
+  "gitHubProfile": "GitHub Profile",
+
+  "settings": "Settings",
+  "profile": "Profile",
+  "account": "Account",
+
+  "language": "Language",
+  "theme": "Theme",
+
+  "darkMode": "Dark Mode",
+  "lightMode": "Light Mode",
+
+  "about": "About",
+  "help": "Help",
+
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+
+  "version": "Version",
+
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+
+  "cancel": "Cancel",
+  "ok": "OK",
+
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+
+  "close": "Close",
+  "back": "Back",
+  "next": "Next",
+  "skip": "Skip",
+
+  "search": "Search",
+
+  "noData": "No data available",
+  "retry": "Retry",
+
+  "userName": "User Name",
+
+  "temperature": "Temperature",
+  "humidity": "Humidity",
+  "windSpeed": "Wind Speed",
+
+  "description": "Description",
+
+  "city": "City",
+  "country": "Country",
+
+  "repositories": "Repositories",
+  "followers": "Followers",
+  "following": "Following",
+
+  "publicRepos": "Public Repositories",
+
+  "bio": "Bio",
+  "location": "Location",
+  "company": "Company",
+  "blog": "Blog",
+
+  "selectLanguage": "Select Language",
+
+  "english": "English",
+  "hindi": "Hindi",
+  "french": "French",
+  "chinese": "Chinese",
+
+  "loginSuccess": "Login successful!",
+  "loginFailed": "Login failed. Please try again.",
+
+  "logoutSuccess": "Logged out successfully",
+
+  "registrationSuccess": "Registration successful!",
+  "registrationFailed": "Registration failed. Please try again.",
+
+  "networkError": "Network error. Please check your connection.",
+  "unknownError": "An unknown error occurred. Please try again.",
+
+
+  "enterGithubUsername": "Enter GitHub username",
+  "@enterGithubUsername": {
+    "description": "Placeholder for GitHub username search field"
+  },
+
+  "enterCityName": "Enter city name",
+  "@enterCityName": {
+    "description": "Placeholder for city input field in weather screen"
+  },
+
+  "enterEmailPlaceholder": "Enter your email",
+  "@enterEmailPlaceholder": {
+    "description": "Placeholder text for email field"
+  },
+
+  "enterPasswordPlaceholder": "Enter your password",
+  "@enterPasswordPlaceholder": {
+    "description": "Placeholder text for password field"
+  }
+}

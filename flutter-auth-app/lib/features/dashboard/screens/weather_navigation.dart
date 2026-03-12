@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../auth/controller/weather_controller.dart';
 import '../../auth/controller/auth_controller.dart';
+import '../../../l10n/app_localizations_extension.dart';
 
 class WeatherNavigation extends StatefulWidget {
   const WeatherNavigation({Key? key}) : super(key: key);
@@ -99,7 +100,7 @@ class _WeatherNavigationState extends State<WeatherNavigation> {
                   child: TextField(
                     controller: _cityController,
                     decoration: InputDecoration(
-                      hintText: 'Enter city name',
+                      hintText: context.l10n.enterCityName,
                       prefixIcon: const Icon(Icons.location_on_rounded),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
